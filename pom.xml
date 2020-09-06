@@ -15,17 +15,27 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>rubygems-proxy</id>
+      <name>Rubygems Proxy</name>
+      <url>http://rubygems-proxy.torquebox.org/releases</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.asciidoctor</groupId>
       <artifactId>asciidoctorj</artifactId>
       <version>1.5.4.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.asciidoctor</groupId>
-      <artifactId>asciidoctorj-pdf</artifactId>
-      <version>1.5.3</version>
       <scope>provided</scope>
     </dependency>
     <!-- Alternatives (in order of preference): HunspellBridJ (includes native libs), jazzy (seems dead for a long time) -->
@@ -45,5 +55,62 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>asciidoctor</artifactId>
+      <version>1.5.4</version>
+      <type>gem</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>leafy-complete</artifactId>
+      <version>0.6.2</version>
+      <type>gem</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>rspec</artifactId>
+      <version>3.0.0</version>
+      <type>gem</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/ruby</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>rspec-maven-plugin</artifactId>
+        <version>1.1.5</version>
+        <executions>
+          <execution>
+            <id>ruby-rspec</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <specSourceDirectory>${basedir}/src/test/ruby/rspec</specSourceDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19.1</version>
+        <configuration>
+          <excludes>
+            <exclude>*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
